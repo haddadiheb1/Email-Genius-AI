@@ -171,6 +171,10 @@ For issues and feature requests, please check the troubleshooting section or cre
 
 Email Compose page
 <img width="431" height="630" alt="image" src="https://github.com/user-attachments/assets/cf0f794d-60ab-47c6-b0ba-803777eea90b" />
+
+
+
+
 Email Reply page
 <img width="379" height="629" alt="image" src="https://github.com/user-attachments/assets/9bacf526-643e-44e5-8536-3a85c6d32739" />
 
