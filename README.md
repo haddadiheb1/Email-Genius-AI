@@ -1,77 +1,76 @@
-# AI Email Assistant for Gmail
-
+ AI Email Assistant for Gmail
 A powerful Chrome Extension that integrates AI-powered email composition and reply assistance directly into Gmail using OpenAI's API.
+[Install on Chrome Web Store]([https://chrome.google.com/webstore/detail/your-extension-id](https://chromewebstore.google.com/detail/email-genius-ai/agdcadlggjnahkmhbfofpclfgiofmgng?hl=fr))
+🎯 Features
 
-## 🎯 Features
+ Gmail Sidebar Integration
+- Fixed Right-Side Sidebar: Always accessible floating sidebar in Gmail
+- Smooth Toggle Animation: Beautiful slide-in/out animations
+- Non-Intrusive Design: Doesn't interfere with Gmail's functionality
 
-### Gmail Sidebar Integration
-- **Fixed Right-Side Sidebar**: Always accessible floating sidebar in Gmail
-- **Smooth Toggle Animation**: Beautiful slide-in/out animations
-- **Non-Intrusive Design**: Doesn't interfere with Gmail's functionality
+Compose Tab ✍️
+- Email Subject Input: Enter the subject line
+- Intent Description: Describe what you want to write about
+- Tone Selection: Choose from Formal, Friendly, or Neutral tones
+- AI Generation: Creates complete, well-formatted emails
+- Copy Functionality: Easy copy-to-clipboard with visual feedback
 
-### Compose Tab ✍️
-- **Email Subject Input**: Enter the subject line
-- **Intent Description**: Describe what you want to write about
-- **Tone Selection**: Choose from Formal, Friendly, or Neutral tones
-- **AI Generation**: Creates complete, well-formatted emails
-- **Copy Functionality**: Easy copy-to-clipboard with visual feedback
+Reply Tab 💬
+- Auto Email Detection: Automatically reads currently opened emails
+- Smart Context Understanding: AI understands the email content
+- Contextual Replies: Generates relevant, appropriate responses
+- Direct Gmail Integration: Insert replies directly into Gmail's compose box
+- Multiple Output Options: Copy or insert directly
 
-### Reply Tab 💬
-- **Auto Email Detection**: Automatically reads currently opened emails
-- **Smart Context Understanding**: AI understands the email content
-- **Contextual Replies**: Generates relevant, appropriate responses
-- **Direct Gmail Integration**: Insert replies directly into Gmail's compose box
-- **Multiple Output Options**: Copy or insert directly
+🛠 Technical Stack
 
-## 🛠 Technical Stack
+- Frontend: Vanilla JavaScript, TailwindCSS
+- Chrome APIs: Manifest V3, Content Scripts, Background Service Worker
+- AI Integration: OpenAI API (GPT model)
+- Design: Modern, clean UI with smooth animations
 
-- **Frontend**: Vanilla JavaScript, TailwindCSS
-- **Chrome APIs**: Manifest V3, Content Scripts, Background Service Worker
-- **AI Integration**: OpenAI API (GPT model)
-- **Design**: Modern, clean UI with smooth animations
+📦 Installation & Setup
 
-## 📦 Installation & Setup
+ Development Setup
 
-### Development Setup
+1. Clone/Download this project to your local machine
 
-1. **Clone/Download** this project to your local machine
-
-2. **Install Icons** (Required):
+2. Install Icons (Required):
    - Add icon files to the `icons/` directory:
      - `icon16.png` (16x16 pixels)
      - `icon32.png` (32x32 pixels) 
      - `icon48.png` (48x48 pixels)
      - `icon128.png` (128x128 pixels)
 
-3. **Load Extension in Chrome**:
+3. Load Extension in Chrome:
    - Open Chrome and go to `chrome://extensions/`
    - Enable "Developer mode" (toggle in top right)
    - Click "Load unpacked"
    - Select this project folder
 
-4. **Test on Gmail**:
+4. Test on Gmail:
    - Open [Gmail](https://mail.google.com)
    - Look for the floating blue button on the right side
    - Click to open the AI assistant sidebar
 
-### Production Considerations
+Production Considerations
 
-- **API Key Security**: Move the OpenAI API key to Chrome's secure storage
-- **Error Handling**: Implement comprehensive error handling and user feedback
-- **Performance**: Add request caching and rate limiting
-- **Privacy**: Review and enhance data handling practices
+- API Key Security: Move the OpenAI API key to Chrome's secure storage
+- Error Handling: Implement comprehensive error handling and user feedback
+- Performance: Add request caching and rate limiting
+- Privacy: Review and enhance data handling practices
 
-## 🎨 UI/UX Features
+🎨 UI/UX Features
 
-- **TailwindCSS Styling**: Modern, responsive design
-- **Smooth Animations**: Slide transitions and hover effects
-- **Loading States**: Beautiful spinners during AI generation
-- **Visual Feedback**: Success animations and status indicators
-- **Accessibility**: Focus management and keyboard navigation
+- TailwindCSS Styling: Modern, responsive design
+- Smooth Animations: Slide transitions and hover effects
+- Loading States: Beautiful spinners during AI generation
+- Visual Feedback Success animations and status indicators
+- Accessibility Focus management and keyboard navigation
 
-## 🔧 Architecture
+ 🔧 Architecture
 
-### File Structure
+ File Structure
 ```
 ├── manifest.json          # Extension configuration
 ├── content.js             # Gmail integration & sidebar injection
@@ -83,47 +82,47 @@ A powerful Chrome Extension that integrates AI-powered email composition and rep
 └── icons/                 # Extension icons
 ```
 
-### Key Components
+ Key Components
 
-1. **Content Script** (`content.js`):
+1. Content Script (`content.js`):
    - Injects sidebar into Gmail
    - Detects email content changes
    - Manages sidebar visibility
    - Handles reply insertion
 
-2. **Sidebar Interface** (`sidebar.html/js`):
+2. Sidebar Interface (`sidebar.html/js`):
    - Tab-based navigation (Compose/Reply)
    - Form handling and validation
    - OpenAI API integration
    - Real-time email content updates
 
-3. **Background Service** (`background.js`):
+3. Background Service (`background.js`):
    - Extension lifecycle management
    - Tab monitoring and content script injection
    - Error handling and analytics
 
-## 🤖 AI Integration
+ 🤖 AI Integration
 
-### OpenAI Configuration
-- **Model**: GPT-3.5-turbo (configurable)
-- **Max Tokens**: 500 (adjustable)
-- **Temperature**: 0.7 (balanced creativity)
+ OpenAI Configuration
+- Model GPT-3.5-turbo (configurable)
+- Max Tokens 500 (adjustable)
+- Temperature 0.7 (balanced creativity)
 
-### Prompt Engineering
-- **Tone-Specific Instructions**: Formal, Friendly, Neutral variations
-- **Context-Aware Prompts**: Different prompts for compose vs reply
-- **Professional Formatting**: Ensures proper email structure
+ Prompt Engineering
+- Tone-Specific Instructions Formal, Friendly, Neutral variations
+- Context-Aware Prompts Different prompts for compose vs reply
+- Professional Formatting Ensures proper email structure
 
-## 🔒 Security & Privacy
+ 🔒 Security & Privacy
 
-- **Minimal Permissions**: Only requests necessary Chrome permissions
-- **Content Security**: Proper CSP implementation
-- **Data Handling**: No persistent storage of email content
-- **API Security**: Secure API key management (needs enhancement for production)
+- Minimal Permissions Only requests necessary Chrome permissions
+- Content Security Proper CSP implementation
+- Data Handling No persistent storage of email content
+- API Security: Secure API key management (needs enhancement for production)
 
-## 📱 Browser Compatibility
+ 📱 Browser Compatibility
 
-- **Chrome**: Fully supported (Manifest V3)
+- Chrome Fully supported (Manifest V3)
 - **Edge**: Compatible (Chromium-based)
 - **Firefox**: Not compatible (different extension format)
 
@@ -169,3 +168,9 @@ This project is for educational and development purposes. Ensure compliance with
 ## 📞 Support
 
 For issues and feature requests, please check the troubleshooting section or create an issue in the project repository.
+
+Email Compose page
+<img width="431" height="630" alt="image" src="https://github.com/user-attachments/assets/cf0f794d-60ab-47c6-b0ba-803777eea90b" />
+Email Reply page
+<img width="379" height="629" alt="image" src="https://github.com/user-attachments/assets/9bacf526-643e-44e5-8536-3a85c6d32739" />
+
