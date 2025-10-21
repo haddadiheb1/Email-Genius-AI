@@ -1,6 +1,6 @@
  AI Email Assistant for Gmail
 A powerful Chrome Extension that integrates AI-powered email composition and reply assistance directly into Gmail using OpenAI's API.
-[Install on Chrome Web Store]([https://chrome.google.com/webstore/detail/your-extension-id](https://chromewebstore.google.com/detail/email-genius-ai/agdcadlggjnahkmhbfofpclfgiofmgng?hl=fr))
+
 🎯 Features
 
  Gmail Sidebar Integration
