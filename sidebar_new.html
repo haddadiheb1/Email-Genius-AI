@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Email Assistant</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #2d3748;
+            line-height: 1.6;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(79, 70, 229, 0.3);
+        }
+
+        .header h1 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .header p {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        /* Navigation Tabs */
+        .nav-tabs {
+            display: flex;
+            background: #f8fafc;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .nav-tab {
+            flex: 1;
+            padding: 16px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            color: #64748b;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-tab:hover {
+            background: #f1f5f9;
+            color: #4f46e5;
+        }
+
+        .nav-tab.active {
+            color: #4f46e5;
+            background: white;
+        }
+
+        .nav-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #4f46e5, #7c3aed);
+        }
+
+        /* Content Area */
+        .content {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .form-input, .form-textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-input:focus, .form-textarea:focus {
+            outline: none;
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* Tone Selection */
+        .tone-selector {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .tone-btn {
+            padding: 10px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            color: #6b7280;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .tone-btn:hover {
+            border-color: #4f46e5;
+            color: #4f46e5;
+            transform: translateY(-2px);
+        }
+
+        .tone-btn.active {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            border-color: #4f46e5;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            color: white;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(79, 70, 229, 0.4);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #6b7280;
+            border: 2px solid #e5e7eb;
+        }
+
+        .btn-secondary:hover {
+            border-color: #4f46e5;
+            color: #4f46e5;
+            transform: translateY(-2px);
+        }
+
+        /* Loading Animation */
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Output Container */
+        .output-container {
+            margin-top: 24px;
+            padding: 20px;
+            background: #f8fafc;
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+            display: none;
+        }
+
+        .output-container.show {
+            display: block;
+            animation: slideUp 0.4s ease;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .output-content {
+            background: white;
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #374151;
+            margin-bottom: 16px;
+            border: 1px solid #e5e7eb;
+            white-space: pre-wrap;
+        }
+
+        .output-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        /* Custom Scrollbar */
+        .content::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .content::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+
+        .content::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+
+        .content::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        /* Hidden class */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 480px) {
+            .container {
+                padding: 0;
+            }
+            
+            .content {
+                padding: 16px;
+            }
+            
+            .tone-selector {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>✨ AI Email Assistant</h1>
+            <p>Powered by OpenRouter AI</p>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="nav-tabs">
+            <button class="nav-tab active" id="compose-tab">
+                ✍️ Compose
+            </button>
+            <button class="nav-tab" id="reply-tab">
+                💬 Reply
+            </button>
+        </div>
+
+        <!-- Content Area -->
+        <div class="content">
+            <!-- Compose Tab -->
+            <div class="tab-content active" id="compose-content">
+                <div class="form-group">
+                    <label class="form-label">Email Subject</label>
+                    <input type="text" class="form-input" id="email-subject" 
+                           placeholder="Enter email subject...">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-textarea" id="email-description" 
+                              placeholder="Describe what you want to write about..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Tone</label>
+                    <div class="tone-selector">
+                        <button class="tone-btn active" data-tone="professional">👔 Professional</button>
+                        <button class="tone-btn" data-tone="casual">😊 Casual</button>
+                        <button class="tone-btn" data-tone="friendly">🤝 Friendly</button>
+                        <button class="tone-btn" data-tone="formal">📋 Formal</button>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" id="generate-email">
+                    <span id="generate-email-text">🚀 Generate Email</span>
+                    <div class="spinner hidden" id="generate-email-spinner"></div>
+                </button>
+
+                <div class="output-container" id="generated-email-container">
+                    <div class="output-content" id="generated-email"></div>
+                    <div class="output-actions">
+                        <button class="btn btn-secondary" id="copy-email">📋 Copy</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reply Tab -->
+            <div class="tab-content" id="reply-content">
+                <div class="form-group">
+                    <label class="form-label">Original Email</label>
+                    <textarea class="form-textarea" id="original-email" 
+                              placeholder="Paste the original email here or it will be auto-detected..."
+                              style="min-height: 120px;"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Reply Tone</label>
+                    <div class="tone-selector">
+                        <button class="tone-btn reply-tone-btn active" data-tone="professional">👔 Professional</button>
+                        <button class="tone-btn reply-tone-btn" data-tone="casual">😊 Casual</button>
+                        <button class="tone-btn reply-tone-btn" data-tone="friendly">🤝 Friendly</button>
+                        <button class="tone-btn reply-tone-btn" data-tone="formal">📋 Formal</button>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" id="generate-reply">
+                    <span id="generate-reply-text">💬 Generate Reply</span>
+                    <div class="spinner hidden" id="generate-reply-spinner"></div>
+                </button>
+
+                <div class="output-container" id="generated-reply-container">
+                    <div class="output-content" id="generated-reply"></div>
+                    <div class="output-actions">
+                        <button class="btn btn-secondary" id="copy-reply">📋 Copy</button>
+                        <button class="btn btn-primary" id="insert-reply">📧 Insert Reply</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="sidebar.js"></script>
+</body>
+</html>

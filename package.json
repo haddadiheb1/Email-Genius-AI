@@ -1,0 +1,57 @@
+{
+  "name": "ai-email-assistant-gmail",
+  "version": "1.0.0",
+  "description": "AI-powered email composition and reply assistant for Gmail using OpenAI",
+  "main": "manifest.json",
+  "scripts": {
+    "build": "echo 'Building Chrome Extension...' && echo 'No build process needed for this extension'",
+    "dev": "echo 'Development mode: Load extension in Chrome Developer Mode'",
+    "lint": "echo 'Linting JavaScript files...' && node -e \"console.log('Add ESLint for proper linting')\"",
+    "test": "echo 'Testing extension functionality...' && echo 'Manual testing required - load in Chrome'",
+    "package": "echo 'Creating extension package...' && echo 'Use Chrome Extension tools to package'",
+    "validate": "echo 'Validating manifest and files...' && node -e \"const fs = require('fs'); const manifest = JSON.parse(fs.readFileSync('manifest.json', 'utf8')); console.log('Manifest valid:', manifest.name);\""
+  },
+  "keywords": [
+    "chrome-extension",
+    "gmail",
+    "ai",
+    "openai",
+    "email",
+    "assistant",
+    "productivity"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "devDependencies": {
+    "eslint": "^8.0.0",
+    "prettier": "^2.0.0"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/ai-email-assistant-gmail.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/ai-email-assistant-gmail/issues"
+  },
+  "homepage": "https://github.com/yourusername/ai-email-assistant-gmail#readme",
+  "manifest": {
+    "manifest_version": 3,
+    "name": "AI Email Assistant for Gmail",
+    "version": "1.0.0"
+  },
+  "chrome_extension": {
+    "manifest_version": 3,
+    "permissions": [
+      "activeTab",
+      "storage",
+      "scripting"
+    ],
+    "host_permissions": [
+      "https://mail.google.com/*",
+      "https://api.openai.com/*"
+    ]
+  }
+}

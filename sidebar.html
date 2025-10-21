@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Genius AI</title>
+    <style>
+        /* CSS Custom Properties for theming */
+        :root {
+            --bg-gradient: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+            --container-bg: rgba(255, 255, 255, 0.95);
+            --text-primary: #2d3748;
+            --text-secondary: #4a5568;
+            --card-bg: rgba(255, 255, 255, 0.8);
+            --border-color: rgba(59, 130, 246, 0.2);
+            --input-bg: #ffffff;
+            --button-bg: linear-gradient(135deg, #3b82f6, #1e40af);
+            --button-hover-bg: linear-gradient(135deg, #2563eb, #1d4ed8);
+            --header-shadow: rgba(30, 64, 175, 0.3);
+        }
+
+        /* Dark mode variables */
+        body.dark-mode {
+            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            --container-bg: rgba(15, 23, 42, 0.95);
+            --text-primary: #e2e8f0;
+            --text-secondary: #cbd5e1;
+            --card-bg: rgba(30, 41, 59, 0.8);
+            --border-color: rgba(71, 85, 105, 0.3);
+            --input-bg: #334155;
+            --button-bg: linear-gradient(135deg, #1e40af, #0f172a);
+            --button-hover-bg: linear-gradient(135deg, #1d4ed8, #0c0a09);
+            --header-shadow: rgba(0, 0, 0, 0.5);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-primary);
+            line-height: 1.6;
+            height: 100vh;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .container {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: var(--container-bg);
+            backdrop-filter: blur(20px);
+        }
+
+        /* Header */
+        .header {
+            background: var(--button-bg);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 20px var(--header-shadow);
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .header p {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        /* Dark Mode Toggle */
+        .dark-mode-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            padding: 6px 12px;
+            color: white;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .dark-mode-toggle:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .dark-mode-toggle .icon {
+            font-size: 14px;
+        }
+
+        /* Navigation Tabs */
+        .nav-tabs {
+            display: flex;
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-tab {
+            flex: 1;
+            padding: 16px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-tab:hover {
+            background: var(--border-color);
+            color: var(--text-primary);
+        }
+
+        .nav-tab.active {
+            color: var(--text-primary);
+            background: var(--input-bg);
+        }
+
+        .nav-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--button-bg);
+        }
+
+        /* Content Area */
+        .content {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .form-input, .form-textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background: var(--input-bg);
+            color: var(--text-primary);
+        }
+
+        .form-input:focus, .form-textarea:focus {
+            outline: none;
+            border-color: #1e40af;
+            box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* Tone Selection */
+        .tone-selector {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .tone-btn {
+            padding: 10px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            background: var(--card-bg);
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .tone-btn:hover {
+            border-color: #1e40af;
+            color: #1e40af;
+            transform: translateY(-2px);
+        }
+
+        .tone-btn.active {
+            background: var(--button-bg);
+            border-color: #1e40af;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(30, 64, 175, 0.3);
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--button-bg);
+            color: white;
+            box-shadow: 0 4px 12px rgba(30, 64, 175, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: var(--button-hover-bg);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(30, 64, 175, 0.4);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: var(--card-bg);
+            color: var(--text-secondary);
+            border: 2px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            border-color: #1e40af;
+            color: #1e40af;
+            transform: translateY(-2px);
+        }
+
+        /* Loading Animation */
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Output Container */
+        .output-container {
+            margin-top: 24px;
+            padding: 20px;
+            background: var(--card-bg);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            display: none;
+        }
+
+        .output-container.show {
+            display: block;
+            animation: slideUp 0.4s ease;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .output-content {
+            background: var(--input-bg);
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+            border: 1px solid var(--border-color);
+            white-space: pre-wrap;
+        }
+
+        .output-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        /* Custom Scrollbar */
+        .content::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .content::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+
+        .content::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+
+        .content::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        /* Hidden class */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 480px) {
+            .container {
+                padding: 0;
+            }
+            
+            .content {
+                padding: 16px;
+            }
+            
+            .tone-selector {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <button class="dark-mode-toggle" id="dark-mode-toggle">
+                <span class="icon">🌙</span>
+                <span id="dark-mode-text">Dark</span>
+            </button>
+            <h1>✨ Email Genius AI</h1>
+            <p>Smart Email Assistant</p>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="nav-tabs">
+            <button class="nav-tab active" id="compose-tab">
+                ✍️ Compose
+            </button>
+            <button class="nav-tab" id="reply-tab">
+                💬 Reply
+            </button>
+        </div>
+
+        <!-- Content Area -->
+        <div class="content">
+            <!-- Compose Tab -->
+            <div class="tab-content active" id="compose-content">
+                <div class="form-group">
+                    <label class="form-label">Recipient Email</label>
+                    <input type="email" class="form-input" id="recipient-email" 
+                           placeholder="Enter recipient's email address...">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Email Subject</label>
+                    <input type="text" class="form-input" id="email-subject" 
+                           placeholder="Enter email subject...">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-textarea" id="email-description" 
+                              placeholder="Describe what you want to write about..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Tone</label>
+                    <div class="tone-selector">
+                        <button class="tone-btn active" data-tone="professional">👔 Professional</button>
+                        <button class="tone-btn" data-tone="casual">😊 Casual</button>
+                        <button class="tone-btn" data-tone="friendly">🤝 Friendly</button>
+                        <button class="tone-btn" data-tone="formal">📋 Formal</button>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" id="generate-email">
+                    <span id="generate-email-text">🚀 Generate Email</span>
+                    <div class="spinner hidden" id="generate-email-spinner"></div>
+                </button>
+
+                <div class="output-container" id="generated-email-container">
+                    <div class="output-content" id="generated-email"></div>
+                    <div class="output-actions">
+                        <button class="btn btn-secondary" id="regenerate-email">🔄 Regenerate</button>
+                        <button class="btn btn-secondary" id="copy-email">📋 Copy</button>
+                        <button class="btn btn-primary" id="compose-email">📧 Compose in Gmail</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reply Tab -->
+            <div class="tab-content" id="reply-content">
+                <div class="form-group">
+                    <label class="form-label">Original Email</label>
+                    <textarea class="form-textarea" id="original-email" 
+                              placeholder="Paste the original email here or it will be auto-detected..."
+                              style="min-height: 120px;"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Reply Tone</label>
+                    <div class="tone-selector">
+                        <button class="tone-btn reply-tone-btn active" data-tone="professional">👔 Professional</button>
+                        <button class="tone-btn reply-tone-btn" data-tone="casual">😊 Casual</button>
+                        <button class="tone-btn reply-tone-btn" data-tone="friendly">🤝 Friendly</button>
+                        <button class="tone-btn reply-tone-btn" data-tone="formal">📋 Formal</button>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" id="generate-reply">
+                    <span id="generate-reply-text">💬 Generate Reply</span>
+                    <div class="spinner hidden" id="generate-reply-spinner"></div>
+                </button>
+
+                <div class="output-container" id="generated-reply-container">
+                    <div class="output-content" id="generated-reply"></div>
+                    <div class="output-actions">
+                        <button class="btn btn-secondary" id="regenerate-reply">🔄 Regenerate</button>
+                        <button class="btn btn-secondary" id="copy-reply">📋 Copy</button>
+                        <button class="btn btn-primary" id="insert-reply">📧 Insert Reply</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="sidebar.js"></script>
+</body>
+</html>
