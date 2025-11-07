@@ -32,7 +32,8 @@ const regenerateReplyBtn = document.getElementById('regenerate-reply');
 
 // Dark mode elements
 const darkModeToggle = document.getElementById('dark-mode-toggle');
-const darkModeText = document.getElementById('dark-mode-text');
+const themeIcon = document.getElementById('theme-icon');
+const aiLogo = document.getElementById('ai-logo');
 
 // Tone selection variables
 let selectedComposeTone = 'professional';
@@ -44,17 +45,33 @@ let lastReplyParams = null;
 
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-    initializeDarkMode();
-    initializeEventListeners();
+    try {
+        initializeDarkMode();
+        initializeEventListeners();
+        // Hide AI logo on open
+        if (aiLogo) aiLogo.style.opacity = '0';
+        setTimeout(() => {
+            if (aiLogo) aiLogo.style.opacity = '1';
+        }, 600);
+        // Auto-close when clicking outside
+        document.addEventListener('mousedown', function(e) {
+            const sidebar = document.querySelector('.container');
+            if (sidebar && !sidebar.contains(e.target)) {
+                window.close();
+            }
+        });
+    } catch (err) {
+        console.error('Sidebar initialization failed:', err);
+    }
 });
 
 function initializeEventListeners() {
     // Dark mode toggle
-    darkModeToggle.addEventListener('click', toggleDarkMode);
+    if (darkModeToggle) darkModeToggle.addEventListener('click', toggleDarkMode);
 
     // Tab switching
-    composeTab.addEventListener('click', () => switchToComposeTab());
-    replyTab.addEventListener('click', () => switchToReplyTab());
+    if (composeTab) composeTab.addEventListener('click', () => switchToComposeTab());
+    if (replyTab) replyTab.addEventListener('click', () => switchToReplyTab());
 
     // Compose tone buttons
     const composeToneButtons = document.querySelectorAll('#compose-content .tone-btn');
@@ -77,25 +94,27 @@ function initializeEventListeners() {
     });
 
     // Generate buttons
-    generateEmailBtn.addEventListener('click', generateEmail);
-    generateReplyBtn.addEventListener('click', generateReply);
+    if (generateEmailBtn) generateEmailBtn.addEventListener('click', generateEmail);
+    if (generateReplyBtn) generateReplyBtn.addEventListener('click', generateReply);
 
     // Copy buttons
-    copyEmailBtn.addEventListener('click', () => copyToClipboard(generatedEmail.textContent));
-    copyReplyBtn.addEventListener('click', () => copyToClipboard(generatedReply.textContent));
+    if (copyEmailBtn) copyEmailBtn.addEventListener('click', () => copyToClipboard(generatedEmail.textContent));
+    if (copyReplyBtn) copyReplyBtn.addEventListener('click', () => copyToClipboard(generatedReply.textContent));
 
     // Compose email button
-    composeEmailBtn.addEventListener('click', composeEmailInGmail);
+    if (composeEmailBtn) composeEmailBtn.addEventListener('click', composeEmailInGmail);
 
     // Insert reply button
-    insertReplyBtn.addEventListener('click', insertReplyIntoGmail);
+    if (insertReplyBtn) insertReplyBtn.addEventListener('click', insertReplyIntoGmail);
 
     // Regenerate buttons
-    regenerateEmailBtn.addEventListener('click', regenerateEmail);
-    regenerateReplyBtn.addEventListener('click', regenerateReply);
+    if (regenerateEmailBtn) regenerateEmailBtn.addEventListener('click', regenerateEmail);
+    if (regenerateReplyBtn) regenerateReplyBtn.addEventListener('click', regenerateReply);
 
     // Auto-detect email when switching to reply tab
-    requestEmailContent();
+    if (typeof requestEmailContent === 'function') {
+        requestEmailContent();
+    }
 }
 
 function switchToComposeTab() {
@@ -406,21 +425,16 @@ function toggleDarkMode() {
     updateDarkModeToggle(isDarkMode);
     
     // Add animation feedback
-    darkModeToggle.style.transform = 'scale(0.95)';
-    setTimeout(() => {
-        darkModeToggle.style.transform = 'scale(1)';
-    }, 150);
+    if (darkModeToggle) {
+        darkModeToggle.style.transform = 'scale(0.95)';
+        setTimeout(() => {
+            darkModeToggle.style.transform = 'scale(1)';
+        }, 150);
+    }
 }
 
 function updateDarkModeToggle(isDarkMode) {
-    const icon = darkModeToggle.querySelector('.icon');
-    const text = darkModeToggle.querySelector('#dark-mode-text');
-    
-    if (isDarkMode) {
-        icon.textContent = '☀️';
-        text.textContent = 'Light';
-    } else {
-        icon.textContent = '🌙';
-        text.textContent = 'Dark';
+    if (themeIcon) {
+        themeIcon.textContent = isDarkMode ? '☀️' : '🌙';
     }
 }

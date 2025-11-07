@@ -1,6 +1,41 @@
 // Configuration
-const OPENAI_API_KEY = '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';
 const OPENAI_API_URL = 'https://openrouter.ai/api/v1/chat/completions';
+
+// Load .env and expose window.env for runtime use
+window.env = window.env || {};
+
+async function loadEnv() {
+    try {
+        const envUrl = (typeof chrome !== 'undefined' && chrome.runtime && typeof chrome.runtime.getURL === 'function')
+            ? chrome.runtime.getURL('.env')
+            : '.env';
+
+        const res = await fetch(envUrl);
+        if (!res.ok) {
+            console.warn('No .env found or not accessible:', res.status);
+            return;
+        }
+        const text = await res.text();
+        const parsed = {};
+        text.split(/\r?\n/).forEach(line => {
+            const trimmed = line.trim();
+            if (!trimmed || trimmed.startsWith('#')) return;
+            const match = trimmed.match(/^([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*)$/);
+            if (match) {
+                let value = match[2].trim();
+                // Strip surrounding quotes and optional trailing semicolon
+                if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith('\'') && value.endsWith('\''))) {
+                    value = value.slice(1, -1);
+                }
+                if (value.endsWith(';')) value = value.slice(0, -1);
+                parsed[match[1]] = value;
+            }
+        });
+        window.env = { ...window.env, ...parsed };
+    } catch (e) {
+        console.warn('Failed to load .env:', e);
+    }
+}
 
 // DOM Elements
 const composeTab = document.getElementById('compose-tab');
@@ -31,7 +66,8 @@ let selectedComposeTone = 'professional';
 let selectedReplyTone = 'professional';
 
 // Initialize when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    await loadEnv();
     initializeEventListeners();
 });
 
@@ -96,7 +132,7 @@ async function callOpenAI(messages) {
         const response = await fetch(OPENAI_API_URL, {
             method: 'POST',
             headers: {
-                'Authorization': `Bearer ${OPENAI_API_KEY}`,
+                'Authorization': `Bearer ${window.env.OPENROUTER_API_KEY}`,
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
